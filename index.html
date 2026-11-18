@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10324b">
+<meta name="description" content="Fieldnote is a private evidence and incident documentation workspace for security teams. Request pricing, a live demo, or a pilot program.">
+<title>Fieldnote — Private evidence management for security teams</title>
+<style>
+:root{
+  --navy:#10324b;
+  --navy-deep:#0c2638;
+  --navy-soft:#173f5b;
+  --surface:#f6f8fa;
+  --surface-2:#eef2f5;
+  --card:#ffffff;
+  --line:#dde5eb;
+  --line-strong:#c8d4de;
+  --text:#173046;
+  --muted:#6a7c8d;
+  --blue:#2576b8;
+  --blue-strong:#1d679f;
+  --green:#4e8f6d;
+  --green-soft:#e3f0e8;
+  --warning:#c08c39;
+  --shadow:0 18px 60px rgba(16,50,75,.10);
+  --radius:20px;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{margin:0;font:16px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--surface);color:var(--text)}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.container{width:min(1180px,calc(100% - 40px));margin:auto}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:800;letter-spacing:.17em;text-transform:uppercase;color:var(--blue)}
+.eyebrow::before{content:"";width:34px;height:2px;background:var(--blue);border-radius:999px}
+.site-header{position:sticky;top:0;z-index:50;background:rgba(246,248,250,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(16,50,75,.08)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:76px}
+.logo{display:flex;align-items:center;gap:14px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+.logo-badge{width:42px;height:42px;border-radius:14px;background:linear-gradient(180deg,#143b57,#0f3047);display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.logo-badge svg{width:22px;height:22px}
+.logo small{display:block;font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--muted);margin-top:2px}
+.nav-links{display:flex;align-items:center;gap:28px;color:#506577;font-size:14px;font-weight:600}
+.nav-links a:hover{color:var(--blue)}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 20px;border-radius:13px;border:1px solid transparent;font-weight:800;transition:.2s ease;background:transparent;white-space:nowrap}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--blue);color:#fff;box-shadow:0 8px 20px rgba(37,118,184,.18)}
+.btn-primary:hover{background:var(--blue-strong)}
+.btn-secondary{background:#fff;color:var(--text);border-color:var(--line-strong)}
+.btn-secondary:hover{background:#f9fbfc}
+.btn-ghost{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.2)}
+.btn-sm{padding:10px 14px;font-size:14px}
+.mobile-toggle{display:none;padding:10px 12px;border-radius:12px;border:1px solid var(--line-strong);background:#fff;color:var(--text)}
+.hero{padding:70px 0 84px;background:linear-gradient(180deg,#f8fafb 0%,#eef3f6 100%)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:46px;align-items:center}
+.hero h1{font-size:clamp(42px,5.3vw,66px);line-height:1.02;letter-spacing:-.05em;margin:18px 0 18px}
+.hero p.lead{font-size:18px;color:var(--muted);max-width:640px;margin:0}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0 26px}
+.hero-points{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.point{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 16px 15px;box-shadow:var(--shadow)}
+.point strong{display:block;font-size:14px;margin-bottom:4px}
+.point span{font-size:13px;color:var(--muted)}
+.hero-visual{position:relative}
+.desktop-shot{background:#fff;border:1px solid var(--line);border-radius:28px;box-shadow:0 30px 80px rgba(16,50,75,.16);overflow:hidden}
+.desktop-shot img{width:100%;height:auto}
+.floating-phone{position:absolute;bottom:-18px;width:min(29%,185px);background:#fff;border:1px solid var(--line);border-radius:26px;box-shadow:0 22px 60px rgba(16,50,75,.18);overflow:hidden}
+.floating-phone.left{left:-10px;transform:rotate(-6deg)}
+.floating-phone.right{right:-10px;transform:rotate(6deg)}
+.badge-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13px;font-weight:700;color:#4d6578}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.section{padding:92px 0}
+.section-heading{max-width:760px;margin-bottom:36px}
+.section-heading h2{font-size:clamp(30px,4vw,48px);line-height:1.08;letter-spacing:-.04em;margin:14px 0 12px}
+.section-heading p{margin:0;color:var(--muted);font-size:17px}
+.value-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.value-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;box-shadow:var(--shadow)}
+.value-icon{width:52px;height:52px;border-radius:16px;background:#eaf2f8;color:var(--blue);display:grid;place-items:center;margin-bottom:16px;font-size:22px;font-weight:900}
+.value-card h3{margin:0 0 10px;font-size:20px;line-height:1.25}
+.value-card p{margin:0;color:var(--muted);font-size:14px}
+.app-showcase{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.showcase-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:24px;align-items:start}
+.showcase-main{background:linear-gradient(180deg,#f9fbfc,#eef3f6);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow)}
+.showcase-main img{border-radius:18px;border:1px solid #d9e2e9}
+.showcase-side{display:grid;gap:18px}
+.side-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px;box-shadow:var(--shadow)}
+.side-card img{border-radius:18px;border:1px solid #dbe4ea;margin-bottom:14px}
+.side-card h3{margin:0 0 6px;font-size:18px}
+.side-card p{margin:0;color:var(--muted);font-size:14px}
+.stats-band{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:24px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 20px;box-shadow:var(--shadow)}
+.stat b{display:block;font-size:30px;line-height:1;color:var(--navy)}
+.stat span{display:block;font-size:13px;color:var(--muted);margin-top:8px}
+.steps-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.step-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px;position:relative;box-shadow:var(--shadow)}
+.step-number{width:44px;height:44px;border-radius:14px;background:#eaf2f8;color:var(--blue);display:grid;place-items:center;font-size:18px;font-weight:900;margin-bottom:16px}
+.step-card h3{margin:0 0 10px;font-size:20px}
+.step-card p{margin:0;color:var(--muted);font-size:14px}
+.audience-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.audience-card{background:var(--navy);color:#fff;border-radius:24px;padding:30px;border:1px solid rgba(255,255,255,.08);box-shadow:0 22px 60px rgba(12,38,56,.18)}
+.audience-card.alt{background:#fff;color:var(--text);border:1px solid var(--line)}
+.audience-card p,.audience-card li{color:rgba(255,255,255,.78)}
+.audience-card.alt p,.audience-card.alt li{color:var(--muted)}
+.audience-card h3{margin:0 0 10px;font-size:24px;line-height:1.2}
+.audience-card ul{margin:14px 0 0;padding-left:18px}
+.audience-card li{padding:5px 0}
+.sales-panel{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-soft) 100%);padding:92px 0;color:#fff}
+.sales-grid{display:grid;grid-template-columns:minmax(0,.84fr) minmax(0,1.16fr);gap:36px;align-items:start}
+.sales-copy h2{font-size:clamp(34px,4vw,52px);line-height:1.05;letter-spacing:-.05em;margin:16px 0}
+.sales-copy p{color:rgba(255,255,255,.78)}
+.info-list{display:grid;gap:14px;margin-top:24px}
+.info-item{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+.info-icon{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.12);display:grid;place-items:center;font-weight:900}
+.info-item strong{display:block;margin-bottom:3px}
+.info-item span{display:block;color:rgba(255,255,255,.72);font-size:14px}
+.form-panel{background:#fff;color:var(--text);border-radius:24px;padding:28px;border:1px solid rgba(255,255,255,.1);box-shadow:0 28px 70px rgba(11,31,48,.22)}
+.form-panel h3{font-size:28px;line-height:1.1;letter-spacing:-.04em;margin:0 0 8px}
+.form-panel p{margin:0;color:var(--muted)}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:22px 0 20px;padding:5px;background:#edf2f6;border-radius:14px}
+.tab{border:0;border-radius:10px;padding:12px 6px;font-weight:800;font-size:13px;color:#536a7d;background:transparent}
+.tab[aria-selected="true"]{background:var(--blue);color:#fff;box-shadow:0 8px 18px rgba(37,118,184,.18)}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.field label{font-size:12px;font-weight:800;color:#415b70}
+.field input,.field textarea,.field select{width:100%;min-width:0;border:1px solid var(--line-strong);background:#fff;border-radius:12px;padding:12px 13px;color:var(--text)}
+.field textarea{min-height:112px;resize:vertical}
+.field input:focus,.field textarea:focus,.field select:focus{outline:3px solid rgba(37,118,184,.14);border-color:var(--blue)}
+.form-bottom{display:grid;gap:12px}
+.notice{display:none;padding:13px 14px;border-radius:12px;font-size:14px;font-weight:600}
+.notice.show{display:block}
+.notice.info{background:#eaf2f8;color:#27577a}
+.notice.success{background:#e7f3eb;color:#2d6b48}
+.notice.error{background:#faecec;color:#923d3d}
+.fineprint{font-size:12px;color:var(--muted);margin:0}
+.faq{background:#f0f4f7}
+.faq-grid{display:grid;gap:14px}
+.faq-item{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 22px;box-shadow:var(--shadow)}
+.faq-item summary{cursor:pointer;font-weight:800;list-style:none}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item p{margin:12px 0 0;color:var(--muted)}
+.site-footer{background:var(--navy-deep);color:#fff;padding:34px 0 26px}
+.footer-grid{display:grid;grid-template-columns:1fr auto;gap:22px;align-items:start}
+.footer-grid p{color:rgba(255,255,255,.7);max-width:540px}
+.footer-links{display:flex;gap:18px;flex-wrap:wrap;color:rgba(255,255,255,.76);font-size:14px}
+.footer-links a:hover{color:#fff}
+.footer-bottom{margin-top:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,.10);font-size:13px;color:rgba(255,255,255,.6)}
+
+/* Product screenshot details: use verified app screenshots, not old failure-state captures. */
+.hero-visual-caption{display:flex;justify-content:center;align-items:center;gap:9px;color:#537084;font-weight:700;font-size:12px;margin-top:16px}
+.screen-crop{position:relative;overflow:hidden;height:166px;border:1px solid var(--line);background:#f5f8fa;border-radius:14px;margin-bottom:14px}
+.screen-crop img{position:absolute;max-width:none;width:940px;height:auto}
+.screen-crop-sidebar img{top:-7px;left:-1px}
+.screen-crop-header img{top:-52px;right:-90px}
+.hero-visual .desktop-shot{transform:rotate(-1deg)}
+.showcase-side .side-card{min-width:0}
+@media(max-width:1100px){.hero-visual .desktop-shot{transform:none}}
+@media(max-width:680px){.screen-crop img{width:780px}.screen-crop-header img{right:-80px}.hero-visual-caption{font-size:11px}}
+
+@media (max-width: 1080px){
+  .hero-grid,.showcase-grid,.sales-grid{grid-template-columns:1fr}
+  .hero-visual{margin-top:10px}
+  .floating-phone{position:relative;display:inline-block;bottom:auto;left:auto;right:auto;transform:none!important;width:min(42%,220px);margin-top:16px}
+  .hero-visual .stack{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+}
+@media (max-width: 900px){
+  .nav-links{display:none;position:absolute;left:20px;right:20px;top:76px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);flex-direction:column;align-items:flex-start}
+  .nav-links.open{display:flex}
+  .mobile-toggle{display:inline-flex}
+  .value-grid,.steps-grid,.audience-grid,.stats-band,.hero-points,.field-grid{grid-template-columns:1fr}
+  .nav-actions .btn-secondary{display:none}
+}
+@media (max-width: 680px){
+  .container{width:min(100% - 24px,1180px)}
+  .hero{padding:52px 0 74px}
+  .section,.sales-panel{padding:72px 0}
+  .hero-actions,.nav-actions{flex-wrap:wrap}
+  .floating-phone{width:min(48%,180px)}
+  .tabs{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header class="site-header" id="top">
+  <div class="container nav">
+    <a class="logo" href="#top" aria-label="Fieldnote home">
+      <span class="logo-badge" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" color="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3l7 3v5c0 5-3.5 8.6-7 10-3.5-1.4-7-5-7-10V6l7-3z"></path>
+          <path d="M9.4 12.2l1.8 1.8 3.6-4"></path>
+        </svg>
+      </span>
+      <span>FIELDNOTE<small>Private evidence workspace</small></span>
+    </a>
+    <nav class="nav-links" id="mainNav">
+      <a href="#product">Product</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#roles">Use cases</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact" data-request="demo">Live demo</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-secondary btn-sm" href="#contact" data-request="pricing">Get pricing</a>
+      <a class="btn btn-primary btn-sm" href="#contact" data-request="pilot">Request pilot</a>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow">Security evidence management</div>
+        <h1>Built for security teams that need a clear, private record of every upload.</h1>
+        <p class="lead">Fieldnote helps officers upload photos, videos, and reports into a controlled evidence workspace while giving supervisors and administrators a clean catalog to review, search, and manage.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#contact" data-request="pricing">Request pricing</a>
+          <a class="btn btn-secondary" href="#contact" data-request="demo">Book a live demo</a>
+        </div>
+        <div class="badge-row">
+          <span class="badge"><span class="dot"></span> Private, access-controlled records</span>
+          <span class="badge">Officer upload numbers</span>
+          <span class="badge">Evidence + report workflow</span>
+        </div>
+        <div class="hero-points" style="margin-top:24px;">
+          <div class="point"><strong>Upload with context</strong><span>Attach notes, incident IDs, timestamps, and file details at the moment of upload.</span></div>
+          <div class="point"><strong>Review in one catalog</strong><span>Search, sort, and retrieve evidence from a single organized workspace.</span></div>
+          <div class="point"><strong>Control access</strong><span>Keep records within a restricted, administrator-managed environment.</span></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="desktop-shot">
+          <img src="assets/fieldnote-desktop.png" alt="Fieldnote evidence catalog interface">
+        </div>
+        <div class="hero-visual-caption"><span class="dot"></span> Actual Fieldnote interface • Evidence catalog</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="product">
+    <div class="container">
+      <div class="section-heading">
+        <div class="eyebrow">Why teams choose Fieldnote</div>
+        <h2>Make evidence collection easier for officers and easier to review for leadership.</h2>
+        <p>Fieldnote is designed around the core workflow security teams already follow: upload evidence, connect it to incidents, review it quickly, and keep access controlled.</p>
+      </div>
+      <div class="value-grid">
+        <article class="value-card">
+          <div class="value-icon">⤴</div>
+          <h3>Fast image and video intake</h3>
+          <p>Officers can upload image and video evidence from the field, add notes, capture time details, and save records into a private catalog.</p>
+        </article>
+        <article class="value-card">
+          <div class="value-icon">≣</div>
+          <h3>Clear evidence catalog</h3>
+          <p>Supervisors and administrators can browse records by file, incident, uploader, and time, making review and follow-up more straightforward.</p>
+        </article>
+        <article class="value-card">
+          <div class="value-icon">🔒</div>
+          <h3>Restricted access model</h3>
+          <p>Fieldnote is built for controlled internal use, with administrator-managed access and private evidence storage.</p>
+        </article>
+      </div>
+      <div class="stats-band">
+        <div class="stat"><b>Photos</b><span>Attach image evidence to incident documentation.</span></div>
+        <div class="stat"><b>Videos</b><span>Keep video evidence in the same controlled workspace.</span></div>
+        <div class="stat"><b>Reports</b><span>Support evidence with written incident reporting.</span></div>
+        <div class="stat"><b>Traceability</b><span>Use structured upload numbers and recorded uploader details.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section app-showcase">
+    <div class="container">
+      <div class="section-heading">
+        <div class="eyebrow">Real product screens</div>
+        <h2>Show clients the actual Fieldnote experience.</h2>
+        <p>These screenshots come from the actual Fieldnote evidence catalog. Additional mobile and administrative screens can be added after their final production versions are captured.</p>
+      </div>
+      <div class="showcase-grid">
+        <div class="showcase-main">
+          <img src="assets/fieldnote-desktop.png" alt="Fieldnote desktop evidence catalog showing the evidence catalog dashboard, upload button, and restricted access interface.">
+        </div>
+        <div class="showcase-side">
+          <div class="side-card">
+            <div class="screen-crop screen-crop-sidebar" role="img" aria-label="Detail from the real Fieldnote screen showing navigation for evidence catalog, officer reports, and media upload"><img src="assets/fieldnote-desktop.png" alt=""></div>
+            <h3>One organized workspace</h3>
+            <p>The actual Fieldnote navigation separates the evidence catalog, officer reports, and media upload functions for fast access.</p>
+          </div>
+          <div class="side-card">
+            <div class="screen-crop screen-crop-header" role="img" aria-label="Detail from the real Fieldnote evidence catalog showing upload and administrator controls"><img src="assets/fieldnote-desktop.png" alt=""></div>
+            <h3>Review and manage evidence</h3>
+            <p>The catalog brings search, upload, date filters, and administrator actions into a consistent interface.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="workflow">
+    <div class="container">
+      <div class="section-heading">
+        <div class="eyebrow">How it works</div>
+        <h2>A simple workflow from upload to review.</h2>
+        <p>Fieldnote focuses on the steps security teams repeat every day, without requiring a complicated workflow to get started.</p>
+      </div>
+      <div class="steps-grid">
+        <article class="step-card">
+          <div class="step-number">1</div>
+          <h3>Upload evidence</h3>
+          <p>Officers add photos or videos, confirm the captured time, and enter supporting details such as notes or an incident number.</p>
+        </article>
+        <article class="step-card">
+          <div class="step-number">2</div>
+          <h3>Store it privately</h3>
+          <p>Files are saved inside a restricted workspace designed for internal evidence handling rather than public sharing.</p>
+        </article>
+        <article class="step-card">
+          <div class="step-number">3</div>
+          <h3>Review and manage</h3>
+          <p>Supervisors or administrators can review evidence in the catalog, retrieve records, and support documentation workflows.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="roles">
+    <div class="container audience-grid">
+      <article class="audience-card">
+        <div class="eyebrow" style="color:#8fc3ea">For administrators</div>
+        <h3>Visibility and control over the evidence workspace.</h3>
+        <p>Fieldnote helps admin users keep the workspace organized while controlling who can access it.</p>
+        <ul>
+          <li>Review evidence and reports in one place</li>
+          <li>Support internal audit and documentation workflows</li>
+          <li>Manage a private, restricted evidence environment</li>
+          <li>Use upload numbers to track submissions</li>
+        </ul>
+      </article>
+      <article class="audience-card alt">
+        <div class="eyebrow">For officers and field teams</div>
+        <h3>Simple enough to use in the field.</h3>
+        <p>Fieldnote reduces friction at the point of upload while still capturing the context leadership needs later.</p>
+        <ul>
+          <li>Phone-friendly upload flow</li>
+          <li>Supports image and video evidence</li>
+          <li>Add notes and incident references quickly</li>
+          <li>Built for repeat use across shifts and sites</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="sales-panel" id="contact">
+    <div class="container sales-grid">
+      <div class="sales-copy">
+        <div class="eyebrow" style="color:#9cc8e7">Start the conversation</div>
+        <h2>Request pricing, a live demo, or a pilot program.</h2>
+        <p>Whether you're evaluating Fieldnote for one site or planning a broader rollout, this page is built to help potential clients start the right conversation.</p>
+        <div class="info-list">
+          <div class="info-item">
+            <div class="info-icon">$</div>
+            <div><strong>Pricing request</strong><span>Tell us about your team size, organization, and what you need priced.</span></div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon">▶</div>
+            <div><strong>Live demo</strong><span>Walk through the Fieldnote workflow with your team and see the evidence catalog in action.</span></div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon">◇</div>
+            <div><strong>Pilot request</strong><span>Discuss a limited evaluation, pilot team size, and initial rollout goals.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-panel">
+        <h3>Start a client inquiry</h3>
+        <p id="formIntro">Choose what you would like to request.</p>
+        <div class="tabs" role="tablist" aria-label="Inquiry type">
+          <button type="button" role="tab" class="tab" data-type="pricing" aria-selected="true">Pricing</button>
+          <button type="button" role="tab" class="tab" data-type="demo" aria-selected="false">Live demo</button>
+          <button type="button" role="tab" class="tab" data-type="pilot" aria-selected="false">Pilot</button>
+        </div>
+        <div class="notice" id="formNotice" role="status" aria-live="polite"></div>
+        <form id="leadForm">
+          <input type="hidden" name="requestType" id="requestType" value="pricing">
+          <div class="field-grid">
+            <div class="field">
+              <label for="fullName">Full name *</label>
+              <input required autocomplete="name" maxlength="100" name="fullName" id="fullName" placeholder="Your name">
+            </div>
+            <div class="field">
+              <label for="workEmail">Work email *</label>
+              <input required autocomplete="email" maxlength="180" name="workEmail" id="workEmail" type="email" placeholder="you@company.com">
+            </div>
+            <div class="field">
+              <label for="company">Company / organization *</label>
+              <input required autocomplete="organization" maxlength="140" name="company" id="company" placeholder="Organization name">
+            </div>
+            <div class="field">
+              <label for="phone">Phone (optional)</label>
+              <input autocomplete="tel" maxlength="40" name="phone" id="phone" type="tel" placeholder="(555) 555-0123">
+            </div>
+            <div class="field">
+              <label for="teamSize">Security team size</label>
+              <select id="teamSize" name="teamSize">
+                <option value="">Select team size</option>
+                <option>1–5</option>
+                <option>6–20</option>
+                <option>21–50</option>
+                <option>51–100</option>
+                <option>101+</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="industry">Organization type</label>
+              <select id="industry" name="industry">
+                <option value="">Choose an option</option>
+                <option>Security company</option>
+                <option>Property management</option>
+                <option>Healthcare</option>
+                <option>Commercial / corporate</option>
+                <option>Education</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label id="detailsLabel" for="details">What do you need pricing for?</label>
+            <textarea maxlength="2000" name="details" id="details" placeholder="Tell us about your environment, sites, and what you want to solve."></textarea>
+          </div>
+          <div class="field" id="demoTimeField" hidden>
+            <label for="preferredTime">Preferred demo time (optional)</label>
+            <input id="preferredTime" name="preferredTime" type="datetime-local">
+          </div>
+          <div class="field" id="pilotScopeField" hidden>
+            <label for="pilotScope">Pilot size or duration (optional)</label>
+            <input id="pilotScope" name="pilotScope" maxlength="120" placeholder="e.g., 5 officers across one site for 30 days">
+          </div>
+          <div class="field">
+            <label for="contactMethod">Preferred reply method</label>
+            <select id="contactMethod" name="contactMethod">
+              <option>Email</option>
+              <option>Phone</option>
+            </select>
+          </div>
+          <div class="form-bottom">
+            <button type="submit" id="submitButton" class="btn btn-primary">Prepare pricing request →</button>
+            <p class="fineprint">To receive inquiries, the site owner must configure a business email address or secure form endpoint. With email mode, you review and send the draft from your email app; the website does not send it automatically.</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="section faq" id="faq">
+    <div class="container">
+      <div class="section-heading">
+        <div class="eyebrow">FAQ</div>
+        <h2>Common client questions.</h2>
+        <p>Use this section to answer the practical questions prospective clients are likely to ask during early conversations.</p>
+      </div>
+      <div class="faq-grid">
+        <details class="faq-item">
+          <summary>What is Fieldnote designed for?</summary>
+          <p>Fieldnote helps security teams organize photo, video, and incident-report files in a restricted workspace, recording the uploader and other file metadata.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Can clients request a pilot first?</summary>
+          <p>Yes. Organizations can request a scoped pilot to discuss evaluation goals, duration, team size, and deployment requirements before agreeing to any terms.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Does the Fieldnote license include backend support?</summary>
+          <p>Backend development, server-side infrastructure, database maintenance, and ongoing security maintenance are not included by default. A qualified backend provider must be separately engaged and scoped.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Are submissions automatically stored by this website?</summary>
+          <p>Not by default. The page is prepared for either mailto-based lead capture or connection to a secure form endpoint. This avoids implying back-end handling that has not been configured yet.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="#top">
+          <span class="logo-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" color="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3l7 3v5c0 5-3.5 8.6-7 10-3.5-1.4-7-5-7-10V6l7-3z"></path>
+              <path d="M9.4 12.2l1.8 1.8 3.6-4"></path>
+            </svg>
+          </span>
+          <span>FIELDNOTE<small style="color:rgba(255,255,255,.68)">Private evidence workspace</small></span>
+        </a>
+        <p>Organized evidence capture and review for security teams that need a simple, private, and administrator-managed workflow.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#product">Product</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#roles">Use cases</a>
+        <a href="#contact" data-request="pricing">Pricing</a>
+        <a href="#contact" data-request="demo">Live demo</a>
+        <a href="#contact" data-request="pilot">Pilot</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© <span id="year"></span> Fieldnote. Screenshots show a development-stage Fieldnote interface. Product scope and availability depend on the agreed implementation. Backend development, infrastructure, and ongoing maintenance require a separately engaged technical provider.</div>
+  </div>
+</footer>
+
+<script>
+'use strict';
+// Set contactEmail to your monitored business address, or endpoint to a secure lead intake API.
+// Do not store private keys in this public file.
+const CONFIG = { contactEmail:'', endpoint:'' };
+const labels = {
+  pricing:{ title:'Request pricing', button:'Prepare pricing request →', intro:'Tell us about your organization to discuss a tailored quote.', details:'What do you need pricing for?' },
+  demo:{ title:'Request a live demo', button:'Prepare demo request →', intro:'Tell us who will attend and which workflows you want to see.', details:'What would you like us to demonstrate?' },
+  pilot:{ title:'Request a pilot', button:'Prepare pilot request →', intro:'Share the initial team size and evaluation goals you have in mind.', details:'What would a successful pilot look like?' }
+};
+const tabs=[...document.querySelectorAll('[role="tab"]')];
+const form=document.getElementById('leadForm');
+const notice=document.getElementById('formNotice');
+const submit=document.getElementById('submitButton');
+const nav=document.getElementById('mainNav');
+const mobileToggle=document.getElementById('mobileToggle');
+
+function selectType(type){
+  if(!labels[type]) return;
+  document.getElementById('requestType').value=type;
+  tabs.forEach((tab)=>{
+    const active=tab.dataset.type===type;
+    tab.setAttribute('aria-selected', String(active));
+    tab.tabIndex = active ? 0 : -1;
+  });
+  document.getElementById('formIntro').textContent = labels[type].intro;
+  document.getElementById('detailsLabel').textContent = labels[type].details;
+  submit.textContent = labels[type].button;
+  document.getElementById('demoTimeField').hidden = type !== 'demo';
+  document.getElementById('pilotScopeField').hidden = type !== 'pilot';
+  notice.className='notice';
+  notice.textContent='';
+}
+
+tabs.forEach((tab,index)=>{
+  tab.addEventListener('click',()=>selectType(tab.dataset.type));
+  tab.addEventListener('keydown',(e)=>{
+    if(e.key==='ArrowRight' || e.key==='ArrowLeft'){
+      e.preventDefault();
+      const delta = e.key==='ArrowRight' ? 1 : tabs.length - 1;
+      const target = tabs[(index + delta) % tabs.length];
+      target.focus();
+      selectType(target.dataset.type);
+    }
+  });
+});
+
+document.querySelectorAll('[data-request]').forEach(link=>{
+  link.addEventListener('click',()=>selectType(link.dataset.request));
+});
+
+function showMessage(text, kind='info'){
+  notice.className = 'notice show ' + kind;
+  notice.textContent = text;
+}
+
+function buildDraft(data){
+  const type = labels[data.requestType].title;
+  const lines = [
+    type,
+    '',
+    'Contact',
+    `Name: ${data.fullName}`,
+    `Work email: ${data.workEmail}`,
+    `Organization: ${data.company}`,
+    `Phone: ${data.phone || 'Not provided'}`,
+    `Team size: ${data.teamSize || 'Not provided'}`,
+    `Organization type: ${data.industry || 'Not provided'}`,
+    `Reply via: ${data.contactMethod}`,
+    data.preferredTime && data.requestType==='demo' ? `Preferred demo time (local): ${data.preferredTime}` : null,
+    data.pilotScope && data.requestType==='pilot' ? `Pilot scope: ${data.pilotScope}` : null,
+    '',
+    `Notes: ${data.details || 'No additional notes'}`
+  ].filter(line => line !== null);
+
+  return {
+    subject: `Fieldnote — ${type} — ${data.company}`,
+    body: lines.join('\n')
+  };
+}
+
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  if(!form.reportValidity()) return;
+  const data = Object.fromEntries(new FormData(form).entries());
+  const draft = buildDraft(data);
+
+  if(CONFIG.endpoint){
+    try{
+      submit.disabled = true;
+      submit.textContent = 'Sending…';
+      const res = await fetch(CONFIG.endpoint, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(data)
+      });
+      if(!res.ok) throw new Error(`Request returned HTTP ${res.status}`);
+      form.reset();
+      selectType('pricing');
+      showMessage('Your inquiry was accepted by the configured form service. Thank you!','success');
+    }catch(err){
+      console.error('Fieldnote inquiry submission failed:', err);
+      showMessage('Your inquiry was not confirmed. Please try again or contact the site owner directly.','error');
+    }finally{
+      submit.disabled = false;
+      submit.textContent = labels[document.getElementById('requestType').value].button;
+    }
+    return;
+  }
+
+  if(!CONFIG.contactEmail || !CONFIG.contactEmail.includes('@')){
+    showMessage('This website needs a business contact email to accept requests. Site owner: set CONFIG.contactEmail near the bottom of index.html. Your request has not been sent.','error');
+    return;
+  }
+
+  const url = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(draft.subject)}&body=${encodeURIComponent(draft.body)}`;
+  showMessage('An email draft is opening. Please press Send in your email app to complete the request. Your inquiry has not been sent automatically.','info');
+  window.location.assign(url);
+});
+
+document.getElementById('year').textContent = new Date().getFullYear();
+mobileToggle.addEventListener('click',()=>{
+  const open = nav.classList.toggle('open');
+  mobileToggle.setAttribute('aria-expanded', String(open));
+  mobileToggle.textContent = open ? '✕' : '☰';
+});
+nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{
+  nav.classList.remove('open');
+  mobileToggle.setAttribute('aria-expanded','false');
+  mobileToggle.textContent='☰';
+}));
+</script>
+</body>
+</html>
