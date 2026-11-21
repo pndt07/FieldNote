@@ -450,7 +450,7 @@ button{cursor:pointer}
             </select>
           </div>
           <div class="form-bottom">
-            <button type="submit" id="submitButton" class="btn btn-primary">Prepare pricing request →</button>
+            <button type="submit" id="submitButton" class="btn btn-primary">Open pricing email →</button>
             <p class="fineprint">To receive inquiries, the site owner must configure a business email address or secure form endpoint. With email mode, you review and send the draft from your email app; the website does not send it automatically.</p>
           </div>
         </form>
@@ -519,16 +519,18 @@ button{cursor:pointer}
 'use strict';
 // Set contactEmail to your monitored business address, or endpoint to a secure lead intake API.
 // Do not store private keys in this public file.
-const CONFIG = { contactEmail:'', endpoint:'' };
+const CONFIG = { contactEmail:'evrios0795@gmail.com', endpoint:'' };
 const labels = {
-  pricing:{ title:'Request pricing', button:'Prepare pricing request →', intro:'Tell us about your organization to discuss a tailored quote.', details:'What do you need pricing for?' },
-  demo:{ title:'Request a live demo', button:'Prepare demo request →', intro:'Tell us who will attend and which workflows you want to see.', details:'What would you like us to demonstrate?' },
-  pilot:{ title:'Request a pilot', button:'Prepare pilot request →', intro:'Share the initial team size and evaluation goals you have in mind.', details:'What would a successful pilot look like?' }
+  pricing:{ title:'Request pricing', button:'Open pricing email →', intro:'Tell us about your organization to discuss a tailored quote.', details:'What do you need pricing for?' },
+  demo:{ title:'Request a live demo', button:'Open demo email →', intro:'Tell us who will attend and which workflows you want to see.', details:'What would you like us to demonstrate?' },
+  pilot:{ title:'Request a pilot', button:'Open pilot email →', intro:'Share the initial team size and evaluation goals you have in mind.', details:'What would a successful pilot look like?' }
 };
 const tabs=[...document.querySelectorAll('[role="tab"]')];
 const form=document.getElementById('leadForm');
 const notice=document.getElementById('formNotice');
 const submit=document.getElementById('submitButton');
+const copyInquiry=document.getElementById('copyInquiry');
+let lastDraft=null;
 const nav=document.getElementById('mainNav');
 const mobileToggle=document.getElementById('mobileToggle');
 
@@ -547,6 +549,8 @@ function selectType(type){
   document.getElementById('pilotScopeField').hidden = type !== 'pilot';
   notice.className='notice';
   notice.textContent='';
+  copyInquiry.hidden=true;
+  lastDraft=null;
 }
 
 tabs.forEach((tab,index)=>{
@@ -601,6 +605,7 @@ form.addEventListener('submit', async (e)=>{
   if(!form.reportValidity()) return;
   const data = Object.fromEntries(new FormData(form).entries());
   const draft = buildDraft(data);
+  lastDraft=draft;
 
   if(CONFIG.endpoint){
     try{
@@ -631,8 +636,20 @@ form.addEventListener('submit', async (e)=>{
   }
 
   const url = `mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(draft.subject)}&body=${encodeURIComponent(draft.body)}`;
-  showMessage('An email draft is opening. Please press Send in your email app to complete the request. Your inquiry has not been sent automatically.','info');
+  copyInquiry.hidden=false;
+  showMessage('Your email app should open a prefilled request. Press Send in the email app to complete it. If it does not open, use Copy inquiry text below.','info');
   window.location.assign(url);
+});
+
+copyInquiry.addEventListener('click', async ()=>{
+  if(!lastDraft) return;
+  const text = `To: ${CONFIG.contactEmail}\nSubject: ${lastDraft.subject}\n\n${lastDraft.body}`;
+  try {
+    await navigator.clipboard.writeText(text);
+    showMessage('Inquiry copied. Paste it into an email addressed to '+CONFIG.contactEmail+' and press Send.','success');
+  } catch {
+    showMessage('Copying was blocked by your browser. Open your email app and address the request to '+CONFIG.contactEmail+'.','error');
+  }
 });
 
 document.getElementById('year').textContent = new Date().getFullYear();
